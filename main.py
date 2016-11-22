@@ -1,29 +1,23 @@
 import time
 import serial
 import ledManager
+import comsManager
 
-LedManager = ledManager.LedManager()
-#mm
+led = ledManager.LedManager()
+
 def main():
-    #arduino = init()
+    init()
     while 1:
-        LedManager.update()
+        led.update()
 
 def init():
-    LedManager = LedManager()
-    
-    arduino = serial.Serial('arduino port', 9600)
-    sleep(1)
-    arduino.write("test1")
-    while arduino.in_waiting <= 0:
-        pass
-    test = arduino.readline()
+    led = ledManager.LedManager()
 
-    if test == "test2":
+    coms = comsManager.ComsManager()
+    if coms.testComs():
         ledManager.test()
     else:
         ledManager.flash()
 
-    return arduino
-
+    
 main()
