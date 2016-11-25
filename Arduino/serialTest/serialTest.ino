@@ -1,56 +1,70 @@
-String inputString;
-bool stringComplete;
-bool test;
+int inByte;
+unsigned long serialData = 0;
+int a, b, c, d, e;
 
 void setup() {
   Serial.begin(9600);
-  inputString.reserve(200);
-  stringComplete = false;
-  test = false;
+  while(!Serial){
+  }
 }
 
 void loop() {
-  //checkSerialIn(stringComplete);
-  if(Serial.available()){
-    inputString = Serial.readString();
-    if(inputString.equals("test1"){
-      
+  while(Serial.available() < 0){
+    //wait untill serial data available
+  }
+  readDataIn();
+  sendDataOut(a,b,c);
+}
+
+
+void getSerial() {
+  serialData = 0;
+  while (inByte != '/') {
+    inByte = Serial.read();
+    if(inByte > 0 && inByte != '/') {
+      serialData = serialData * 10 + inByte - '0';
     }
-    Serial.println("test2");
+  }  
+  inByte = 0;
+  return serialData;
+}
+
+//called at the start of loop to read data from the Raspberry pi, dictates motor speeds and tunes played
+void readDataIn(){
+  while(Serial.available() > 0){
+    getSerial();
+    switch(serialData){
+      //data for left motor
+      case 1:
+        {
+          getSerial();
+          a = serialData;
+          break;
+        }
+      case 2:
+        {
+          getSerial();
+          b = serialData;
+          break;
+        }
+      case 3: 
+        {
+          getSerial();
+          c = char(serialData);
+          break;
+        }
+    }
   }
 }
 
 
-
-void checkSerialIn(bool stringComplete){
-   if(stringComplete){
-    if(inputString.equals("test1")){
-      test = true;
-    }
-    inputString = "";
-    stringComplete = false;
-    
-  }
+//called at end of loop to send data to the raspberry pi for the AI to determine what to do next loop
+void sendDataOut(int a, int b, int c){ 
+  int err;
+  char dataOut[50];
+  err = sprintf(dataOut, "1/%d/2/%d/3/%d/4/%d/5/%d/", a,b,c,c,c);
+  if(err < 0)
+    Serial.write("0/");
+  else
+    Serial.write(dataOut);
 }
-
-
-/*
-  SerialEvent occurs whenever a new data comes in the
- hardware serial RX.  This routine is run between each
- time loop() runs, so using delay inside loop can delay
- response.  Multiple bytes of data may be available.
- 
-void serialEvent() {
-  while (Serial.available()) {
-    // get the new byte:
-    char inChar = (char)Serial.read();
-    // add it to the inputString:
-    inputString += inChar;
-    // if the incoming character is a newline, set a flag
-    // so the main loop can do something about it:
-    if (inChar == '\n') {
-      stringComplete = true;
-    }
-  }
-}
-*/

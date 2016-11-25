@@ -3,7 +3,7 @@ import serial
 class ComsManager:
     arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
     inByte = 0
-    dataList #todo: create dataList
+    dataList = [0, 1, 2, 3, 4]
     
     #tests communications between arduino and rpi
     def testComs(self):
@@ -24,9 +24,35 @@ class ComsManager:
         while arduino.available() > 0:
             self.getSerial()
             if serialData == 0:
-                #todo: handle error
-            elif serialData == 1:
-                #todo: finish handling data from arduino
+                return 0
+            #get fed    
+            elif serialData == 1: 
+                self.getSerial()
+                self.dataList[0] = serialData
+            #get pat    
+            elif serialData == 2: 
+                self.getSerial()
+                self.dataList[1] = serialData
+            #get motorState
+            elif serialData == 3:
+                self.getSerial()
+                self.dataList[2] = serialData                    
+            #get ultra sonic data
+            elif serialData == 4: 
+                self.getSerial()
+                self.dataList[3] = serialData
+            #get ir data    
+            elif serialData == 5:
+                self.getSerial()
+                self.dataList[4] = serialData
 
+            return 1
+
+    #sends data in byte array form from the rpi to the arduino, args: motorL and motorR are ints and sound is a char
     def sendSerialData(self, motorL, motorR, sound):
-        #todo: parse and send serial data to arduino
+        dataOut = "1/" + str(motorL) + "/2/" + str(motorR) + "/3/" + sound + "/"
+        serial.write(bytes(dataOut, encoding='utf-8'))
+
+
+    def getData(self):
+        return dataList
