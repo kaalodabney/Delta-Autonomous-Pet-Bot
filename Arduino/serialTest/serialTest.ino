@@ -10,11 +10,16 @@ void setup() {
 }
 
 void loop() {
-  checkSerialIn(stringComplete);
-  if(test = true){
-    Serial.println("motorOn");
+  //checkSerialIn(stringComplete);
+  if(Serial.available()){
+    inputString = Serial.readString();
+    if(inputString.equals("test1"){
+      
+    }
+    Serial.println("test2");
   }
 }
+
 
 
 void checkSerialIn(bool stringComplete){
@@ -34,7 +39,7 @@ void checkSerialIn(bool stringComplete){
  hardware serial RX.  This routine is run between each
  time loop() runs, so using delay inside loop can delay
  response.  Multiple bytes of data may be available.
- */
+ 
 void serialEvent() {
   while (Serial.available()) {
     // get the new byte:
@@ -48,4 +53,4 @@ void serialEvent() {
     }
   }
 }
-
+*/
