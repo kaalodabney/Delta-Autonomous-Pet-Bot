@@ -1,19 +1,22 @@
 import time
 import serial
-import comsManager
+import comsManagerAlpha
 import ledManager
 
 led = ledManager.LedManager()
-coms = comsManager.ComsManager()
-sleep(.5)
-coms.sendSerialData(1,2,3)
+coms = comsManagerAlpha.ComsManager()
 
-if coms.receiveSerialData() == 0:
-    print "error receiving data/n"
-else:
-    print "data received/n"
-    dataList = coms.getData
-    print '\n'.join(str(p) for p in dataList)
-    led.test()
+coms.clearBufferOut()
+coms.clearBufferIn()
+
+coms.sendSerialData(13,222,1)
+print("--------")
+coms.waitUntilDataIn()
+coms.receiveSerialData()    
     
+dataList = coms.getData()
+print("1:" + str(dataList[0]) + " 2:" + str(dataList[1]) + " 3:" + str(dataList[2]) + " 4:" + str(dataList[3]) + " 5:" + str(dataList[4]) + " 6:" + str(dataList[5]))
+led.test()
+
+coms.close()    
     
