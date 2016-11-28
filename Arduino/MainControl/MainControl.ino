@@ -1,6 +1,6 @@
 #include "MotorDriver.h"
-#define rightMotor 0
-#define leftMotor 1
+#define rightMotor 0;
+#define leftMotor 1;
 MotorDriver motor;
 
 #define trigPin 7
@@ -9,38 +9,11 @@ MotorDriver motor;
 #define soundPin 2
 
 #define btnStart 3
-
 bool btnStartOn;
 bool btnStartHeld;
 
-unsigned long serialData = 0;
-int inByte;
-int motorDataInL;
-int motorDataInR;
-char soundDataIn;
-bool fedDataOut;
-bool patDataOut;
-bool motorStateDataOut;
-long ultraSonicDataOut;
-long irDataOut;
-
-int songTone[3][10] = { { 300, 300 }, { 777, 400 }, { 4000, 2000, 1000 } };
-int songTone_Length[3] = { 2, 2, 3 };
-//const int songTone_Length[3] and songTone???????
-const int s_error = 0;
-const int s_hello = 1;
-const int s_bye = 2;
-const int eachToneLastMS = 2000;
-int tone_StartTime = 0;
-int soundIndex_Playing = -1;
-int toneIndex_Playing = 0;
-
-
 void setup() {
-  Serial.begin(9600);
-  while(!Serial){
-    
-  }
+	Serial.begin(9600);
 	pinMode(trigPin, OUTPUT);
 	pinMode(echoPin, INPUT);
 	pinMode(btnStart, INPUT_PULLUP);
@@ -78,6 +51,19 @@ void loop() {
 	}
 	PlayTone();
 }
+
+
+int songTone[3][10] = { { 300, 300 }, { 777, 400 }, { 4000, 2000, 1000 } };
+int songTone_Length[3] = { 2, 2, 3 };
+//const int songTone_Length[3] and songTone???????
+const int s_error = 0;
+const int s_hello = 1;
+const int s_bye = 2;
+const int eachToneLastMS = 2000;
+
+int tone_StartTime = 0;
+int soundIndex_Playing = -1;
+int toneIndex_Playing = 0;
 
 void PlayTone() {
 	if (soundIndex_Playing < 0)
@@ -158,57 +144,3 @@ void Move(long singleSpeed) {
 void Stop() {
 	Move(0);
 }
-
-void getSerial() {
-  serialData = 0;
-  while (inByte != '/') {
-    inByte = Serial.read();
-    if(inByte > 0 && inByte != '/') {
-      serialData = serialData * 10 + inByte - '0';
-    }
-  }  
-  inByte = 0;
-  return serialData;
-}
-
-//called at the start of loop to read data from the Raspberry pi, dictates motor speeds and tunes played
-void readDataIn(){
-  while(Serial.available() > 0){
-    getSerial();
-    switch(serialData){
-      //data for left motor
-      case 1:
-        {
-          getSerial();
-          motorDataInL = serialData;
-          break;
-        }
-      case 2:
-        {
-          getSerial();
-          motorDataInR = serialData;
-          break;
-        }
-      case 3: 
-        {
-          getSerial();
-          soundDataIn = char(serialData);
-          break;
-        }
-    }
-  }
-}
-
-
-//called at end of loop to send data to the raspberry pi for the AI to determine what to do next loop
-void sendDataOut(){ 
-  int err;
-  char dataOut[50];
-  err = sprintf(dataOut, "1/%c/2/%c/3/%c/4/%d/5/%d/", char(fedDataOut), char(patDataOut), char(motorStateDataOut), ultraSonicDataOut, irDataOut);
-  if(err < 0)
-    Serial.write("0/");
-  else
-    Serial.write(dataOut);
-}
-
-
