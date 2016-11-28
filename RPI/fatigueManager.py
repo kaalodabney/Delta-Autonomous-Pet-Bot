@@ -13,22 +13,22 @@ class FatigueManager:
             self.fatigueBasedOnMotor()
         
     def fatigueBasedOnTime(self):
-        if (time.time()-startTime) >=36:#change for demo?
-            fati = fati-(1)
-            startTime=time.time()
-            if fati>100:
-                fati=100
-            if fati <0:
-                fati=0
+        if (time.time()-self.startTime) >=36:#change for demo?
+            self.fati = self.fati-(1)
+            self.startTime=time.time()
+            if self.fati>100:
+                self.fati=100
+            if self.fati <0:
+                self.fati=0
     
     def fatigueBasedOnMotor(self):
-        fati=fati-0.002
-        if fati>100:
-            fati=100
-        if fati <0:
-            fati=0
+        self.fati = self.fati-0.002
+        if self.fati>100:
+            self.fati=100
+        if self.fati <0:
+            self.fati=0
                 
 
     def getFatigueLevel(self):
-        return fati
+        return self.fati
         

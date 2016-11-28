@@ -1,3 +1,4 @@
+
 import time
 
 
@@ -18,42 +19,42 @@ class HungerManager:
         
 
     def fedButtonPush(self):
-        hun=hun+30
-        if hun>100:
-            hun=100
+        self.hun=self.hun+30
+        if self.hun>100:
+            self.hun=100
 
     def hungerBasedOnTime(self):
-        if (time.time()-startTime) >= 36: #change for demo?
-            hun = hun-(1)
-            startTime=time.time()
-            if hun>100:
-                hun=100
-            if hum<0:
-                hun = 0
+        if (time.time()-self.startTime) >= 36: #change for demo?
+            self.hun = self.hun-(1)
+            self.startTime=time.time()
+            if self.hun>100:
+                self.hun=100
+            if self.hun<0:
+                self.hun = 0
      
                 
     def hungerBasedOnMotor(self):
-        hun = hun-0.001
-        if hun>100:
-            hun=100
-        if hun<0:
-            hun=0
+        self.hun = self.hun-0.001
+        if self.hun>100:
+            self.hun=100
+        if self.hun<0:
+            self.hun=0
 
 
 
     def calcHungerMod(self):
-        if hun>=90:
-            hunMod = 2
-        if hun<90 and hun>=50:
-            hunMod=1.5
-        if hun<50:
-            hunMod=1
+        if self.hun>=90:
+            self.hunMod = 2
+        if self.hun<90 and self.hun>=50:
+            self.hunMod=1.5
+        if self.hun<50:
+            self.hunMod=1
             
     def getHungerLevel(self):
-        return hun
+        return self.hun
    
 
     def getHungerMod(self):
-        return hunMod
+        return self.hunMod
 
         

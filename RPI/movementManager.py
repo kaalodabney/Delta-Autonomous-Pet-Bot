@@ -1,4 +1,5 @@
 import time
+import random
 
 class MovementManager:
     runningRoutine = 0;
@@ -13,60 +14,60 @@ class MovementManager:
     startTime = time.time();
     duration = 0;
     step = -1;
-    avoidOn = false;
+    avoidOn = False;
     avoidStartTime = 0;
     avoidDuration = 0;
     avoidStep = -1;
     motor1 = 0          #value to send to arduino to run motors
     motor2 = 0          #value to send to arduino to run motors
-    motorState = false     #true if motor was ran last loop, false if not used for hunger
+    motorState = False     #true if motor was ran last loop, false if not used for hunger
 
-    def update(self,happyLevel,bondLevel,uSensor,irSensor,fatigue,fed,pat):
-        if(runningRoutine==0):
-            findRoutine(self,happyLevel,fed,pat)
+    def update(self,happyLevel,bondLevel,fatigue,uSensor,irSensor,fed,pat):
+        if(self.runningRoutine==0):
+            self.findRoutine(happyLevel,fed,pat)
         elif(fatigue<20):
-            setRoutine(self,1);
-        elif(fed==true):
-            setRoutine(self,4);
-        elif(pat==true):
+            self.setRoutine(1);
+        elif(fed==1):
+            self.setRoutine(4);
+        elif(pat==1):
             if(bondLevel>70 & random()>.6):
-                setRoutine(self,6);
+                self.setRoutine(6);
             else:
-                setRoutine(self,5);        
-        runRoutine(self,fatigue,uSensor,irSensor);
+                self.setRoutine(5);        
+        self.runRoutine(fatigue,uSensor,irSensor);
 
     def runRoutine(self,fatigue,uSensor,irSensor):
-        if(avoidOn==true):
-            avoidCollision(self);
-        elif(runningRoutine==1):
-            rRest(self,fatigue);
-        elif(runningRoutine==2):
-            if(uSensor>10 | irSensor==true):
-                avoidOn=true;
-            rRandom(self,fatigue);
-        elif(runningRoutine==3):
-            if(uSensor>10 | irSensor==true):
-                avoidOn=true;
-            rSpiral(self,fatigue);
-        elif(runningRoutine==4):
-            rFwdBck(self,fatigue);
-        elif(runningRoutine==5):
-            rWiggle(self,fatigue);
-        elif(runningRoutine==6):
-            rSpin(self,fatigue);
+        if(self.avoidOn==True):
+            self.avoidCollision();
+        elif(self.runningRoutine==1):
+            self.rRest(fatigue);
+        elif(self.runningRoutine==2):
+            if(uSensor>10 | irSensor==1):
+                self.avoidOn=True;
+            self.rRandom(fatigue);
+        elif(self.runningRoutine==3):
+            if(uSensor>10 | irSensor==1):
+                self.avoidOn=True;
+            self.rSpiral(fatigue);
+        elif(self.runningRoutine==4):
+            self.rFwdBck(fatigue);
+        elif(self.runningRoutine==5):
+            self.rWiggle(fatigue);
+        elif(self.runningRoutine==6):
+            rSpin(fatigue);
     
     def setRoutine(self, routine):
         runningRoutine=routine;
         step=-1;
         
     def findRoutine(self,happyLevel,fed,pat):
-        r = random()*6;
+        r = random.random()*6;
         if(r<2):
-            setRoutine(self,1);
-        elif(happyLevel>80 & r<3):
-            setRoutine(self,3);
+            self.setRoutine(1);
+        elif (happyLevel>80) & (r<3):
+            self.setRoutine(3);
         else:
-            setRoutine(self,2);
+            self.setRoutine(2);
 
     def initRoutine(self):
         duration = 0;

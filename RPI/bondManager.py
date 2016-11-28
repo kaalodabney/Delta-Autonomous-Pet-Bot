@@ -4,6 +4,7 @@ import time
 class BondManager:
     bon=100
     bonMod=100
+    startTime = time.time()
 
     #### if bon == 100 then pet loves you ####
 
@@ -16,30 +17,30 @@ class BondManager:
 
 
     def bondBasedOnPet(self):
-        bon = bon + 3
-        if bon>100:
-            bon=100
-        if bon<0:
-            bon=0
+        self.bon = self.bon + 3
+        if self.bon>100:
+            self.bon=100
+        if self.bon<0:
+            self.bon=0
 
     def bondBasedOnFed(self):
-        bon = bon + 2
-        if bon>100:
-            bon=100
-        if bon<0:
-            bon=0
+        self.bon = self.bon + 2
+        if self.bon>100:
+            self.bon=100
+        if self.bon<0:
+            self.bon=0
 
 
     def bondBasedOnTime(self, happMod):
-        if (time.time()-startTime) >= 36:
-            bon = bon-(1/happMod)
-            startTime=time.time()
-            if bon>100:
-                bon=100
-            if bon<0:
-                bon=0
+        if (time.time()-self.startTime) >= 36:
+            self.bon = self.bon-(1/happMod)
+            self.startTime=time.time()
+            if self.bon>100:
+                self.bon=100
+            if self.bon<0:
+                self.bon=0
 
     def getBondLevel(self):
-        return bon
+        return self.bon
 
         

@@ -1,19 +1,21 @@
 import time
 import serial
 import ledManager
-import comsManager
-import hunger
-import happy
-import fatigue
-import bond
+#import comsManager
+import hungerManager
+import happyManager
+import fatigueManager
+import bondManager
+#import soundManager
+import movementManager
 
-coms = comsManager.ComsManager()
-hunger = hunger.HungerManager()
-happy = happy.HappyManager()
-fatigue = fatigue.FatigueManager()
-bond = bond.BondManager()
+#coms = comsManager.ComsManager()
+hunger = hungerManager.HungerManager()
+happy = happyManager.HappyManager()
+fatigue = fatigueManager.FatigueManager()
+bond = bondManager.BondManager()
 led = ledManager.LedManager()
-sound = soundManager.SoundManager()
+#sound = soundManager.SoundManager()
 movement = movementManager.MovementManager()
 
 
@@ -26,24 +28,20 @@ movement = movementManager.MovementManager()
 # data[4] = ultra sonic sensor
 # data[5] = ir sensor
 def main():
-    init()
     while 1:
-        coms.receiveSerialData()
-        dataIn = coms.getData()#list of data sent from arduino
-        hunger.update(data[0], data[3])
-        happy.update(hunger.getHungerMod(), data[1])
-        fatigue.update(data[3])
-        bond.update(happy.getHappyMod(), data[1], data[2])
-        led.update(happy.getHappyLevel(), fatigue.getFatigue)
-        sound.update(happy.getHappyLevel(), data[0], data[1], data[4], data[5])
-        movement.update(data[0], data[1], data[4], data[5])
-        coms.sendSerialData(movement.getMotor1(), movement.getMotor2(), sound.getTune())
+#        coms.receiveSerialData()
+#        dataIn = coms.getData()#list of data sent from arduino
+        dataIn = [1, 0, 0, 0, 50, 50]
+        hunger.update(dataIn[0], dataIn[3])
+        happy.update(hunger.getHungerMod(), dataIn[1])
+        fatigue.update(dataIn[3])
+        bond.update(happy.getHappyMod(), dataIn[1], dataIn[0])
+#        led.update(happy.getHappyLevel(), fatigue.getFatigue)
+#        sound.update(happy.getHappyLevel(), data[0], data[1], data[4], data[5])
+        movement.update(happy.getHappyLevel(), bond.getBondLevel(), fatigue.getFatigueLevel(), dataIn[4], dataIn[5], dataIn[0], dataIn[1])
+#
+#        coms.sendSerialData(movement.getMotor1(), movement.getMotor2(), sound.getTune())
+   
 
-def init():
-    if coms.testComs():
-        ledManager.test()
-    else:
-        ledManager.flash()
-
-    
+   
 main()
