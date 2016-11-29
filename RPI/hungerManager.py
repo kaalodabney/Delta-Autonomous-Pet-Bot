@@ -24,7 +24,7 @@ class HungerManager:
             self.hun=100
 
     def hungerBasedOnTime(self):
-        if (time.time()-self.startTime) >= 36: #change for demo?
+        if (time.time()-self.startTime) >= 1: #change for demo? was 36
             self.hun = self.hun-(1)
             self.startTime=time.time()
             if self.hun>100:

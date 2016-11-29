@@ -18,23 +18,23 @@ class LedManager:
     hurtFace = []
     hurtFace2 = []
 
-    def update(self, happyLevel, fatigueLevel, bondLevel, hungerLevel, us, ir, stats):
+    def update(self, happyLevel, fatigueLevel, bondLevel, hungerLevel, us, ir, stats, isSleeping):
         if self.runningRoutine == 0:
-            self.findRoutine(happyLevel, fatigueLevel, us, ir, stats)
+            self.findRoutine(happyLevel, fatigueLevel, bondLevel, hungerLevel, us, ir, stats, isSleeping)
         if self.runningRoutine == 1:
-            self.showStats() #self.setHappyFace()
+            self.showStats(happyLevel, fatigueLevel, bondLevel, hungerLevel) 
         elif self.runningRoutine == 2:
-            self.setHurtFace() #self.setDefaultFace()
+            self.setHurtFace() 
         elif self.runningRoutine == 3:
-            self.animateSleepingFace() #setSadFace()
+            self.animateSleepingFace() 
         elif self.runningRoutine == 4:
             self.setTiredFace()
         elif self.runningRoutine == 5:
-            self.animateSleepingFace()
+            self.setHappyFace()
         elif self.runningRoutine == 6:
-            self.setHurtFace()
+            self.setDefaultFace()
         elif self.runningRoutine == 7:
-            self.showStats()
+            self.setSadFace()
 
     def findRoutine(self, happyLevel, fatigueLevel, bondLevel, hungerLevel, us, ir, stats, isSleeping):
         if stats == 1:
@@ -43,23 +43,21 @@ class LedManager:
             self.runningRoutine = 2
         elif isSleeping == 1:
             self.runningRoutine = 3
-        elif fatigueLevel >
+        elif fatigueLevel < 25:
+            self.runningRoutine = 4
+        else:
             if happyLevel >= 75:
-                self.runningRoutine = 1
+                self.runningRoutine = 5
             elif 25 <= happyLevel < 75:
-                self.runningRoutine = 2
+                self.runningRoutine = 6
             elif happyLevel < 25:
-                self.runningRoutine = 1
+                self.runningRoutine = 7
 
-        
-
-        self.runningRoutine = 5
         self.startTime = time.time()
 	
     def animateSleepingFace(self):
         curTime = time.time()
         if(curTime - self.startTime) <= 1:
-            print(str(curTime - self.startTime))
             self.setSleepingFace1()
         elif 1 < (curTime - self.startTime) <= 2:
             self.setSleepingFace2()
@@ -69,24 +67,34 @@ class LedManager:
             self.setSleepingFace4()
         elif 4 < (curTime - self.startTime):
             self.runningRoutine = 0    
-        
+
+    def showStats(self, happyLevel, fatigueLevel, bondLevel, hungerLevel):
+        self.device.show_message("ha:" + str(happyLevel))
+        self.device.show_message("hu:" + str(hungerLevel))
+        self.device.show_message("fa:" + str(fatigueLevel))
+        self.device.show_message("bo:" + str(bondLevel))
+        self.runningRoutine = 0        
+
     def setHappyFace(self):
         for x in range(16):
             for y in range(8):
                 self.device.pixel(x,y,self.happyFace[y][x],redraw=False)
         self.device.flush()
+        self.runningRoutine = 0
 
     def setDefaultFace(self):
         for x in range(16):
             for y in range(8):
                 self.device.pixel(x,y,self.defaultFace[y][x],redraw=False)
         self.device.flush()
+        self.runningRoutine = 0
 
     def setSadFace(self):
         for x in range(16):
             for y in range(8):
                 self.device.pixel(x,y,self.sadFace2[y][x],redraw=False)
         self.device.flush()
+        self.runningRoutine = 0
 
     def setSleepingFace1(self):
         for x in range(16):
@@ -117,12 +125,14 @@ class LedManager:
             for y in range(8):
                 self.device.pixel(x,y,self.tiredFace[y][x],redraw=False)
         self.device.flush()
+        self.runningRoutine = 0
 
     def setHurtFace(self):
         for x in range(16):
             for y in range(8):
                 self.device.pixel(x,y,self.hurtFace2[y][x],redraw=False)
         self.device.flush()
+        self.runningRoutine = 0
 
     def allOn(self):
         for x in range(16):

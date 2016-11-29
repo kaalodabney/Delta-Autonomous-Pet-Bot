@@ -1,9 +1,9 @@
 import time
-
+from decimal import *
 
 class HappyManager:
     happ = 100
-    happMod=100
+    happMod= 100
     startTime = time.time()
 
     ###### if happpy == 100, pet is totally happy ######
@@ -16,8 +16,9 @@ class HappyManager:
 
 
     def happyBasedOnTime(self, hunMod):
-        if (time.time()-self.startTime) >=36:#change for demo?
+        if (time.time()-self.startTime) >=1:#change for demo? (was 36)
             self.happ = self.happ-(1/hunMod)
+            print("happ2: " + str(self.happ) + " hunMod: " + str(hunMod) + " " +  str(1/hunMod))
             self.startTime=time.time()
             if self.happ>100:
                 self.happ=100

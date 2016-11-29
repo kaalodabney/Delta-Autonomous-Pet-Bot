@@ -20,29 +20,39 @@ class MovementManager:
     avoidStep = -1;
     motor1 = 0          #value to send to arduino to run motors
     motor2 = 0          #value to send to arduino to run motors
-    motorState = False     #true if motor was ran last loop, false if not used for hunger
+    motorState = False  #true if motor was ran last loop, false if not, used for hunger
+    isSleeping = False  #true if currently resting, used to for led
+    deepSleep = False   #true if sleeping when fatigue is below 20, sleeps until fatigue up to 80
 
     def update(self,happyLevel,bondLevel,fatigue,uSensor,irSensor,fed,pat):
-        if(self.runningRoutine==0):
+        if(self.deepSleep == True):
+            print("deep sleep")
+            self.setRoutine(1);
+            if(fatigue > 80):
+                self.deepSleep = False
+        elif(self.runningRoutine == 0):
             self.findRoutine(happyLevel,fed,pat)
         elif(fatigue<20):
+            self.deepSleep = True
             self.setRoutine(1);
         elif(fed==1):
             self.setRoutine(4);
         elif(pat==1):
-            if(bondLevel>70 & random()>.6):
+            if(bondLevel>70) & (random.random()>.6):
                 self.setRoutine(6);
             else:
                 self.setRoutine(5);        
         self.runRoutine(fatigue,uSensor,irSensor);
 
     def runRoutine(self,fatigue,uSensor,irSensor):
-        self.motorState=true;
+        self.motorState=True;
+        self.isSleeping=False
         if(self.avoidOn==True):
             self.avoidCollision();
         elif(self.runningRoutine==1):
             self.rRest(fatigue);
-            self.motorState=false;
+            self.motorState=False;
+            self.isSleeping = True
         elif(self.runningRoutine==2):
             if(uSensor>10 | irSensor==1):
                 self.avoidOn=True;
@@ -56,7 +66,7 @@ class MovementManager:
         elif(self.runningRoutine==5):
             self.rWiggle(fatigue);
         elif(self.runningRoutine==6):
-            rSpin(fatigue);
+            self.rSpin(fatigue);
     
     def setRoutine(self, routine):
         self.runningRoutine=routine;
@@ -80,6 +90,9 @@ class MovementManager:
         self.motor1=(s1/100*fatigue/100)*25+75;
         self.motor2=(s2/100*fatigue/100)*25+75;
         
+    def getIsSleeping(self):
+        return self.isSleeping
+
     def getMotorState(self):
         return self.motorState;
 
@@ -113,37 +126,37 @@ class MovementManager:
     ############################
 
     def rRest(self,fatigue):
-        if(step == -1):
+        if(self.step == -1):
             self.initRoutine();
-            self.duration = random()*15+5;
+            self.duration = random.random()*15+5;
             self.setMotors(0,0,fatigue);
-            self.motorState = false;
+            self.motorState = False;
         elif(time.time()-self.startTime>self.duration):
-            self.setRoutine(self,0);
+            self.setRoutine(0);
         
     def rRandom(self,fatigue):
         if(self.step == -1):
             self.initRoutine();
-            self.duration = random()*4;
-            if(random()>.5):
+            self.duration = random.random()*4;
+            if(random.random()>.5):
                 self.setMotors(-100,100,fatigue);
             else:
                 self.setMotors(100,-100,fatigue);
         elif(self.step == 0):
             if(time.time()-self.startTime>self.duration):
-                self.duration += random()*15+5;
+                self.duration += random.random()*15+5;
                 self.setMotors(100,100,fatigue);
                 self.step+=1;
         elif(self.step == 1):
             if(time.time()-self.startTime>self.duration):
-                setRoutine(0);
+                self.setRoutine(0);
 
     def rSpiral(self,fatigue):
         if(self.step == -1):
             self.initRoutine();
-            self.duration = random()*15+5;
+            self.duration = random.random()*15+5;
             self.setMotors(50,70,fatigue);
-            self.motorState = false;
+            self.motorState = False;
         elif(time.time()-self.startTime>self.duration):
             self.setRoutine(0);
             
@@ -186,8 +199,8 @@ class MovementManager:
     def rSpin(self,fatigue):
         if(self.step == -1):
             self.initRoutine();
-            self.duration = random()*3+2; ##maybe test to make it turn back to you?(use * then)
-            if(random()>.5):
+            self.duration = random.random()*3+2; ##maybe test to make it turn back to you?(use * then)
+            if(random.random()>.5):
                 self.setMotors(95,-95,fatigue);
             else:
                 self.setMotors(-95,95,fatigue);
