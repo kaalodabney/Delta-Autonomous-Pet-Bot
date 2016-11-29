@@ -17,10 +17,6 @@ class LedManager:
     tiredFace = []
     hurtFace = []
     hurtFace2 = []
-    self.initFaces()
-
-    
-    
 
     def update(self, happyLevel, fatigueLevel, us, ir):
         if self.runningRoutine == 0:
