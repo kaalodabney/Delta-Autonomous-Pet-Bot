@@ -2,7 +2,7 @@ import time
 import random
 
 class MovementManager:
-    runningRoutine =  0;
+    runningRoutine = 0;
     #Used to identify the routines to run
     #0 none (used to indicate no routine running)
     #1 rest
@@ -37,10 +37,12 @@ class MovementManager:
         self.runRoutine(fatigue,uSensor,irSensor);
 
     def runRoutine(self,fatigue,uSensor,irSensor):
+        self.motorState=true;
         if(self.avoidOn==True):
             self.avoidCollision();
         elif(self.runningRoutine==1):
             self.rRest(fatigue);
+            self.motorState=false;
         elif(self.runningRoutine==2):
             if(uSensor>10 | irSensor==1):
                 self.avoidOn=True;
@@ -57,8 +59,8 @@ class MovementManager:
             rSpin(fatigue);
     
     def setRoutine(self, routine):
-        runningRoutine=routine;
-        step=-1;
+        self.runningRoutine=routine;
+        self.step=-1;
         
     def findRoutine(self,happyLevel,fed,pat):
         r = random.random()*6;
@@ -70,41 +72,41 @@ class MovementManager:
             self.setRoutine(2);
 
     def initRoutine(self):
-        duration = 0;
-        step = 0;
-        startTime = time.time();
+        self.duration = 0;
+        self.step = 0;
+        self.startTime = time.time();
     
     def setMotors(self,s1,s2,fatigue):
-        motor1=(s1/100*fatigue/100)*25+75;
-        motor2=(s2/100*fatigue/100)*25+75;
+        self.motor1=(s1/100*fatigue/100)*25+75;
+        self.motor2=(s2/100*fatigue/100)*25+75;
         
     def getMotorState(self):
-        return motorState;
+        return self.motorState;
 
     def getMotor1Value(self):
-        return motor1;
+        return self.motor1;
 
     def getMotor2Value(self): 
-        return motor2;
+        return self.motor2;
     
     def avoidCollision(self):
-        if(avoidStep == -1):
-            setMotors(self,-10,-10);
-            avoidDuration = 1;
-            avoidStartTime = time.time();
-            avoidStep+=1;
-        elif(avoidStep==0):
-            if(time.time()-avoidStartTime > avoidDuration):
+        if(self.avoidStep == -1):
+            self.setMotors(-10,-10);
+            self.avoidDuration = 1;
+            self.avoidStartTime = time.time();
+            self.avoidStep+=1;
+        elif(self.avoidStep==0):
+            if(time.time()-self.avoidStartTime > self.avoidDuration):
                 setMotors(self,100,-100);
                 avoidDuration+=.5;
                 avoidStep+=1;
         elif(avoidStep==1):
-            if(time.time()-avoidStartTime > avoidDuration):
-                setMotors(self,0,0);
-                avoidStep=-1;
-                avoidDuration=0;
-                avoidOn=false;
-                duration += (time.time()-avoidStartTime);
+            if(time.time()-self.avoidStartTime > self.avoidDuration):
+                setMotors(0,0);
+                self.avoidStep=-1;
+                self.avoidDuration=0;
+                self.avoidOn=false;
+                self.duration += (time.time()-self.avoidStartTime);
 
     ############################
     #Routines:                 #
@@ -112,83 +114,82 @@ class MovementManager:
 
     def rRest(self,fatigue):
         if(step == -1):
-            initRoutine(self);
-            duration = random()*15+5;
-            setMotors(self,0,0,fatigue);
-            motorState = false;
-        elif(time.time()-startTime>duration):
-            setRoutine(self,0);
+            self.initRoutine();
+            self.duration = random()*15+5;
+            self.setMotors(0,0,fatigue);
+            self.motorState = false;
+        elif(time.time()-self.startTime>self.duration):
+            self.setRoutine(self,0);
         
     def rRandom(self,fatigue):
-        if(step == -1):
-            initRoutine(self);
-            duration = random()*4;
+        if(self.step == -1):
+            self.initRoutine();
+            self.duration = random()*4;
             if(random()>.5):
-                setMotors(self,-100,100,fatigue);
+                self.setMotors(-100,100,fatigue);
             else:
-                setMotors(self,100,-100,fatigue);
-        elif(step == 0):
-            if(time.time()-startTime>duration):
-                duration += random()*15+5;
-                setMotors(self,100,100,fatigue);
-                step+=1;
-        elif(step == 1):
-            if(time.time()-startTime>duration):
-                setRoutine(self,0);
+                self.setMotors(100,-100,fatigue);
+        elif(self.step == 0):
+            if(time.time()-self.startTime>self.duration):
+                self.duration += random()*15+5;
+                self.setMotors(100,100,fatigue);
+                self.step+=1;
+        elif(self.step == 1):
+            if(time.time()-self.startTime>self.duration):
+                setRoutine(0);
 
     def rSpiral(self,fatigue):
-        if(step == -1):
-            initRoutine(self);
-            duration = random()*15+5;
-            setMotors(self,50,70,fatigue);
-            motorState = false;
-        elif(time.time()-startTime>duration):
-            setRoutine(self,0);
+        if(self.step == -1):
+            self.initRoutine();
+            self.duration = random()*15+5;
+            self.setMotors(50,70,fatigue);
+            self.motorState = false;
+        elif(time.time()-self.startTime>self.duration):
+            self.setRoutine(0);
             
     def rFwdBck(self,fatigue): 
-        if(step == -1):
-            initRoutine(self);
-            duration = .8;
-            setMotors(self,90,90,fatigue);
-        elif(step > 4):
-            setRoutine(self,0);
-        elif(step%2 == 0):
-            if(time.time()-startTime>duration):
-                duration += .8;
-                setMotors(self,-95,-95,fatigue);
-                step+=1;
-        elif(step%2 == 1):
-            if(time.time()-startTime>duration):
-                duration += .8;
-                setMotors(self,95,95,fatigue);
-                step+=1;
+        if(self.step == -1):
+            self.initRoutine();
+            self.duration = .8;
+            self.setMotors(90,90,fatigue);
+        elif(self.step > 4):
+            self.setRoutine(0);
+        elif(self.step%2 == 0):
+            if(time.time()-self.startTime>self.duration):
+                self.duration += .8;
+                self.setMotors(-95,-95,fatigue);
+                self.step+=1;
+        elif(self.step%2 == 1):
+            if(time.time()-self.startTime>self.duration):
+                self.duration += .8;
+                self.setMotors(95,95,fatigue);
+                self.step+=1;
                 
     def rWiggle(self,fatigue):
-        if(step == -1):
-            initRoutine(self);
-            duration = .75;
-            setMotors(self,80,-80,fatigue);
-        elif(step > 4):
-            setRoutine(self,0);
+        if(self.step == -1):
+            self.initRoutine();
+            self.duration = .75;
+            self.setMotors(80,-80,fatigue);
+        elif(self.step > 4):
+            self.setRoutine(0);
         elif(step%2 == 0):
-            if(time.time()-startTime>duration):
-                duration += .75;
-                setMotors(self,80,-80,fatigue);
-                step+=1;
-        elif(step%2 == 1):
-            if(time.time()-startTime>duration):
-                duration += .75;
-                setMotors(self,-95,95,fatigue);
-                step+=1;
+            if(time.time()-self.startTime>self.duration):
+                self.duration += .75;
+                self.setMotors(80,-80,fatigue);
+                self.step+=1;
+        elif(self.step%2 == 1):
+            if(time.time()-self.startTime>self.duration):
+                self.duration += .75;
+                self.setMotors(-95,95,fatigue);
+                self.step+=1;
             
     def rSpin(self,fatigue):
-        if(step == -1):
-            initRoutine(self);
-            duration = random()*3+2; ##maybe test to make it turn back to you?(use * then)
+        if(self.step == -1):
+            self.initRoutine();
+            self.duration = random()*3+2; ##maybe test to make it turn back to you?(use * then)
             if(random()>.5):
-                setMotors(self,95,-95,fatigue);
+                self.setMotors(95,-95,fatigue);
             else:
-                setMotors(self,-95,95,fatigue);
-        elif(time.time()-startTime>duration):
-            setRoutine(self,0);
-    
+                self.setMotors(-95,95,fatigue);
+        elif(time.time()-self.startTime>self.duration):
+            self.setRoutine(0);
