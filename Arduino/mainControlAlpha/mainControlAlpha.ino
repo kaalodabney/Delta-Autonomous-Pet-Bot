@@ -14,6 +14,11 @@ int speakerPin = 2;     // select the input pin for the speaker
 int leftMotor = 1;
 int rightMotor = 0;
 
+//declare vars for serial coms
+char inBytes[20]; // buffer for bytes coming into serial
+int dataOut[6];   // array to store data going to RPI [0] = fed button pressed, [1] = pat button pressed, [2] = show stats button pressed, [3] = motorState(1=on/0=off), [4] = ultra sonic sensor value, [5] = ir sensor value 
+int dataIn[3];    // array to store data coming in from RPI [0] = motorL, [1] = motorR, [2] = sound
+
 //initialize input pins
 int IRsensorValue = 0;
 int USsensorValue = 0;
@@ -33,56 +38,87 @@ void setup() {
   pinMode(button2Pin, INPUT_PULLUP);
   pinMode(button3Pin, INPUT_PULLUP);
   pinMode(speakerPin, OUTPUT);
+  motor.begin();
+
   
   //open serial port
   Serial.begin(9600);
-  motor.begin();
+  while(!Serial){
+    ; // do nothing until serial connected
+  }
 }
 
 void loop() {
-  // read the value from the IR sensor:
-  IRsensorValue = analogRead(IRsensorPin);  
-  //output the value for IR sensor
-  Serial.println("IR: " + IRsensorValue);
+  while(Serial.available() <= 0){
+    ; // do nothing until serial data comes in
+  }
   
-  // read the value from the US ECHO pin:
-  USsensorValue = digitalRead(USsensorECHOPin);
-  //output the value for US sensor
-  Serial.println("US: " + USsensorValue);
-  
+  readDataIn();
+  Serial.flush();  
+
+  motor.speed(leftMotor, dataIn[0]);
+  motor.speed(rightMotor, dataIn[1]);
+  //TODO: sound stuff here with dataIn[2]
   
   // read the value from button1:
   button1PrevState = button1State;
   button1State = digitalRead(button1Pin);
+  dataOut[0] = 0;
   //output the value for button1 if pressed
   if ((button1State == LOW) && (button1PrevState == HIGH)){
-    Serial.println("Button 1 Pressed");
+    dataOut[0] = 1;
   }
   
   // read the value from button2:
   button2PrevState = button2State;
   button2State = digitalRead(button2Pin);
+  dataOut[1] = 0;
   //output the value for button2 if pressed
   if ((button2State == LOW) && (button2PrevState == HIGH)){
-    Serial.println("Button 2 Pressed");
+    dataOut[1] = 1;
   }
   
   // read the value from button3:
   button3PrevState = button3State;
   button3State = digitalRead(button3Pin);
+  dataOut[2] = 0;
   //output the value for button1 if pressed
   if ((button3State == LOW) && (button3PrevState == HIGH)){
-    Serial.println("Button 3 Pressed");
+    dataOut[2] = 1;
   }
-  //output speaker
-  tone(speakerPin, 100, 100);
+
+  if((dataIn[0] != 0) || (dataIn[1] != 0)){
+    dataOut[3] = 1;
+  } else {
+    dataOut[3] = 0;
+  }
+
+  // read the value from the US ECHO pin:
+  dataOut[4] = getDistance();
+  // read the value from the IR sensor:
+  dataOut[5] = analogRead(IRsensorPin);  
   
-  motor.speed(rightMotor, 90);
-  motor.speed(leftMotor, 90);
-  
-  delay(1000);
+  Serial.flush();
+  sendDataOut(dataIn[0], dataIn[1], dataIn[2], dataOut[3], dataOut[4], dataOut[5]);
 }
 
+//gets distance from the ultra sonic sensor
+long getDistance() {
+  long duration, Distance;
+  digitalWrite(USsensorTRIGPin, LOW);  // Added this line 
+  delayMicroseconds(2); // Added this line
+  digitalWrite(USsensorTRIGPin, HIGH);
+  delayMicroseconds(10); // Added this line
+  digitalWrite(USsensorTRIGPin, LOW);
+  duration = pulseIn(USsensorECHOPin, HIGH);
+  Distance = (duration / 2) / 29.1;
+  if (Distance >= 200 || Distance <= 0)
+    return 200;
+  return Distance;
+}
+
+//reads a string of data in from serial until '!' character
+//stores data from string in array of ints
 void readDataIn(){
   int ex = 33;
   Serial.readBytesUntil(33, inBytes, 20);
