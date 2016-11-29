@@ -3,9 +3,9 @@ import time
 
 class FatigueManager:
     startTime=time.time()
-    fati=0
+    fati=100
     
-    ###### when fati ==0, it's not tired.#####
+    ###### when fati == 100 it is completly awake.#####
 
     def update(self, MotorOn):
         self.fatigueBasedOnTime()

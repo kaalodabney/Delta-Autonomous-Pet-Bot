@@ -18,29 +18,48 @@ class LedManager:
     hurtFace = []
     hurtFace2 = []
 
-    def update(self, happyLevel, fatigueLevel, us, ir):
+    def update(self, happyLevel, fatigueLevel, bondLevel, hungerLevel, us, ir, stats):
         if self.runningRoutine == 0:
-            self.findRoutine()
+            self.findRoutine(happyLevel, fatigueLevel, us, ir, stats)
         if self.runningRoutine == 1:
-            self.setHappyFace()
+            self.showStats() #self.setHappyFace()
         elif self.runningRoutine == 2:
-            self.setDefaultFace()
+            self.setHurtFace() #self.setDefaultFace()
         elif self.runningRoutine == 3:
-            self.setSadFace()
+            self.animateSleepingFace() #setSadFace()
         elif self.runningRoutine == 4:
             self.setTiredFace()
         elif self.runningRoutine == 5:
             self.animateSleepingFace()
         elif self.runningRoutine == 6:
             self.setHurtFace()
+        elif self.runningRoutine == 7:
+            self.showStats()
 
-    def findRoutine(self):
+    def findRoutine(self, happyLevel, fatigueLevel, bondLevel, hungerLevel, us, ir, stats, isSleeping):
+        if stats == 1:
+            self.runningRoutine = 1
+        elif (us > 10 | ir == 1):
+            self.runningRoutine = 2
+        elif isSleeping == 1:
+            self.runningRoutine = 3
+        elif fatigueLevel >
+            if happyLevel >= 75:
+                self.runningRoutine = 1
+            elif 25 <= happyLevel < 75:
+                self.runningRoutine = 2
+            elif happyLevel < 25:
+                self.runningRoutine = 1
+
+        
+
         self.runningRoutine = 5
         self.startTime = time.time()
 	
     def animateSleepingFace(self):
         curTime = time.time()
         if(curTime - self.startTime) <= 1:
+            print(str(curTime - self.startTime))
             self.setSleepingFace1()
         elif 1 < (curTime - self.startTime) <= 2:
             self.setSleepingFace2()
@@ -48,7 +67,8 @@ class LedManager:
             self.setSleepingFace3()
         elif 3 < (curTime - self.startTime) <=4:
             self.setSleepingFace4()
-        self.runningRoutine = 0    
+        elif 4 < (curTime - self.startTime):
+            self.runningRoutine = 0    
         
     def setHappyFace(self):
         for x in range(16):
@@ -217,7 +237,7 @@ class LedManager:
         [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],
         [0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0]]
         
-        sleepingFace4 = [
+        self.sleepingFace4 = [
         [0,1,1,1,1,0,1,1,1,1,0,1,1,1,1,0],
         [0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0],
         [0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0],

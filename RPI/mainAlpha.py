@@ -37,7 +37,7 @@ def main():
         happy.update(hunger.getHungerMod(), dataIn[1])
         fatigue.update(dataIn[3])
         bond.update(happy.getHappyMod(), dataIn[1], dataIn[0])
-        led.update(happy.getHappyLevel(), fatigue.getFatigue)
+        led.update(happy.getHappyLevel(), fatigue.getFatigueLevel(), dataIn[4], dataIn[5])
 #        sound.update(happy.getHappyLevel(), data[0], data[1], data[4], data[5])
         movement.update(happy.getHappyLevel(), bond.getBondLevel(), fatigue.getFatigueLevel(), dataIn[4], dataIn[5], dataIn[0], dataIn[1])
 #
