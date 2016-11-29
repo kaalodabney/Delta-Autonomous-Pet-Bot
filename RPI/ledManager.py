@@ -48,6 +48,7 @@ class LedManager:
             self.setSleepingFace3()
         elif 3 < (curTime - self.startTime) <=4:
             self.setSleepingFace4()
+        self.runningRoutine = 0    
         
     def setHappyFace(self):
         for x in range(16):
