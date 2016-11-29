@@ -39,6 +39,7 @@ def main():
 #        led.update(happy.getHappyLevel(), fatigue.getFatigue)
 #        sound.update(happy.getHappyLevel(), data[0], data[1], data[4], data[5])
         movement.update(happy.getHappyLevel(), bond.getBondLevel(), fatigue.getFatigueLevel(), dataIn[4], dataIn[5], dataIn[0], dataIn[1])
+        print("test")
 #
 #        coms.sendSerialData(movement.getMotor1(), movement.getMotor2(), sound.getTune())
    

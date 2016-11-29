@@ -2,7 +2,7 @@ import time
 import random
 
 class MovementManager:
-    runningRoutine = 0;
+    runningRoutine =  0;
     #Used to identify the routines to run
     #0 none (used to indicate no routine running)
     #1 rest
