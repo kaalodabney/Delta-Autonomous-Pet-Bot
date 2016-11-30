@@ -73,64 +73,64 @@ class LedManager:
         self.device.show_message("hu:" + str(hungerLevel))
         self.device.show_message("fa:" + str(fatigueLevel))
         self.device.show_message("bo:" + str(bondLevel))
-        self.runningRoutine = 0        
+        self.runningRoutine = 0       
 
     def setHappyFace(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.happyFace[y][x],redraw=False)
+                self.device.pixel(x,y,self.happyFace[7-y][x],redraw=False)
         self.device.flush()
         self.runningRoutine = 0
 
     def setDefaultFace(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.defaultFace[y][x],redraw=False)
+                self.device.pixel(x,y,self.defaultFace[7-y][x],redraw=False)
         self.device.flush()
         self.runningRoutine = 0
 
     def setSadFace(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.sadFace2[y][x],redraw=False)
+                self.device.pixel(x,y,self.sadFace2[7-y][x],redraw=False)
         self.device.flush()
         self.runningRoutine = 0
 
     def setSleepingFace1(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.sleepingFace1[y][x],redraw=False)
+                self.device.pixel(x,y,self.sleepingFace1[7-y][x],redraw=False)
         self.device.flush()
 
     def setSleepingFace2(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.sleepingFace2[y][x],redraw=False)
+                self.device.pixel(x,y,self.sleepingFace2[7-y][x],redraw=False)
         self.device.flush()
 
     def setSleepingFace3(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.sleepingFace3[y][x],redraw=False)
+                self.device.pixel(x,y,self.sleepingFace3[7-y][x],redraw=False)
         self.device.flush()
 
     def setSleepingFace4(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.sleepingFace4[y][x],redraw=False)
+                self.device.pixel(x,y,self.sleepingFace4[7-y][x],redraw=False)
         self.device.flush()        
 
     def setTiredFace(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.tiredFace[y][x],redraw=False)
+                self.device.pixel(x,y,self.tiredFace[7-y][x],redraw=False)
         self.device.flush()
         self.runningRoutine = 0
 
     def setHurtFace(self):
         for x in range(16):
             for y in range(8):
-                self.device.pixel(x,y,self.hurtFace2[y][x],redraw=False)
+                self.device.pixel(x,y,self.hurtFace2[7-y][x],redraw=False)
         self.device.flush()
         self.runningRoutine = 0
 
@@ -222,26 +222,26 @@ class LedManager:
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0],
+        [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],
         [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],
         [0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
         self.sleepingFace2 = [
-        [0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],
         [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],
         [0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0]]
 
         self.sleepingFace3 = [
-        [0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0],
-        [0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0],
-        [0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0],
-        [0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,1,0,1,1,1,1,0],
+        [0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,1,1,1,1,0,1,1,1,1,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],
         [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],
@@ -249,8 +249,8 @@ class LedManager:
         
         self.sleepingFace4 = [
         [0,1,1,1,1,0,1,1,1,1,0,1,1,1,1,0],
-        [0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0],
         [0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0],
+        [0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0],
         [0,1,1,1,1,0,1,1,1,1,0,1,1,1,1,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0],

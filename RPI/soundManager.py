@@ -1,18 +1,21 @@
 import time
 
 class SoundManager:
-    sound=0
+    sound=-1
 
-    def update(self, pet, fed, ir, us, hunLevel):
-        if pet==1:
-            sound=1
-        if fed ==1:
-            sound=2
-        if hunLevel<=20 and int(hunLevel)%5==0:
-            sound=3
-        if us==10 or ir==1:
-            sound=4
+    def update(self, fed, pet, us, ir, hunLevel):
+        if pet == 1:
+            self.sound=1
+        elif fed == 1:
+            self.sound=2
+        elif hunLevel<=20 and int(hunLevel)%5==0:
+            self.sound=3
+        elif us<=10 or ir==1:
+            self.sound=6
+        else:
+            self.sound = -1
         
 
-        def getSoundMod:
-            return self.sound
+    def getTune(self):
+        print("sound: " + str(self.sound))
+        return self.sound

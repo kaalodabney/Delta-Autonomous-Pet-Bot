@@ -15,7 +15,7 @@ class FatigueManager:
     def fatigueBasedOnTime(self, isSleeping):
         if (time.time()-self.startTime) >=1:#change for demo? was 36
             if isSleeping == False:
-                self.fati = self.fati-(1)
+                self.fati = self.fati-(2)
             else:
                 self.fati = self.fati + 5
             self.startTime=time.time()

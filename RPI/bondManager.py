@@ -2,7 +2,7 @@ import time
 
 
 class BondManager:
-    bon=100
+    bon=0
     bonMod=100
     startTime = time.time()
 

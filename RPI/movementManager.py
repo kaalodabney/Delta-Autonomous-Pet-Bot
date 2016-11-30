@@ -24,13 +24,25 @@ class MovementManager:
     isSleeping = False  #true if currently resting, used to for led
     deepSleep = False   #true if sleeping when fatigue is below 20, sleeps until fatigue up to 80
 
+
+    def updateShow(self,fed,pat):
+        if(fed == 1):
+            self.setRoutine(4)
+            self.startTime = time.time()
+        elif(pat == 1):
+            self.setRoutine(5)
+            self.startTime = time.time()
+        self.runRoutineShow();
+
+
     def update(self,happyLevel,bondLevel,fatigue,uSensor,irSensor,fed,pat):
+        print("move routine: " + str(self.runningRoutine))
         if(self.deepSleep == True):
-            print("deep sleep")
-            self.setRoutine(1);
-            if(fatigue > 80):
-                self.deepSleep = False
-        elif(self.runningRoutine == 0):
+           print("deep sleep")
+           self.setRoutine(1);
+           if(fatigue > 80):
+             self.deepSleep = False
+        if(self.runningRoutine == 0):
             self.findRoutine(happyLevel,fed,pat)
         elif(fatigue<20):
             self.deepSleep = True
@@ -44,27 +56,41 @@ class MovementManager:
                 self.setRoutine(5);        
         self.runRoutine(fatigue,uSensor,irSensor);
 
+    def runRoutineShow(self):
+        self.motorState= True
+        self.isSleeping=False
+        if self.runningRoutine == 4:
+            self.rFwdBckShow()
+        elif self.runningRoutine == 5:
+            self.rWiggle(100)
+
     def runRoutine(self,fatigue,uSensor,irSensor):
-        self.motorState=True;
+        self.motorState=True
         self.isSleeping=False
         if(self.avoidOn==True):
             self.avoidCollision();
+
         elif(self.runningRoutine==1):
             self.rRest(fatigue);
             self.motorState=False;
             self.isSleeping = True
+
         elif(self.runningRoutine==2):
             if(uSensor>10 | irSensor==1):
                 self.avoidOn=True;
             self.rRandom(fatigue);
+
         elif(self.runningRoutine==3):
             if(uSensor>10 | irSensor==1):
                 self.avoidOn=True;
             self.rSpiral(fatigue);
+
         elif(self.runningRoutine==4):
             self.rFwdBck(fatigue);
+
         elif(self.runningRoutine==5):
             self.rWiggle(fatigue);
+
         elif(self.runningRoutine==6):
             self.rSpin(fatigue);
     
@@ -87,8 +113,12 @@ class MovementManager:
         self.startTime = time.time();
     
     def setMotors(self,s1,s2,fatigue):
-        self.motor1=(s1/100*fatigue/100)*25+75;
-        self.motor2=(s2/100*fatigue/100)*25+75;
+        self.motor1=(s1/100*fatigue/100)*25
+        self.motor2=(s2/100*fatigue/100)*25
+
+    def setMotorsShow(self,s1,s2):
+        self.motor1 = s1
+        self.motor2 = s2
         
     def getIsSleeping(self):
         return self.isSleeping
@@ -163,20 +193,32 @@ class MovementManager:
     def rFwdBck(self,fatigue): 
         if(self.step == -1):
             self.initRoutine();
-            self.duration = .8;
-            self.setMotors(90,90,fatigue);
+            self.duration = .2;
+            self.setMotors(20,20,fatigue);
         elif(self.step > 4):
             self.setRoutine(0);
         elif(self.step%2 == 0):
             if(time.time()-self.startTime>self.duration):
-                self.duration += .8;
-                self.setMotors(-95,-95,fatigue);
+                self.duration += .2;
+                self.setMotors(-20,-20,fatigue);
                 self.step+=1;
         elif(self.step%2 == 1):
             if(time.time()-self.startTime>self.duration):
-                self.duration += .8;
-                self.setMotors(95,95,fatigue);
+                self.duration += .2;
+                self.setMotors(20,20,fatigue);
                 self.step+=1;
+
+    def rFwdBckShow(self):
+        curTime = time.time()
+        if(curTime - self.startTime) <= .3:
+            self.setMotorsShow(20,20)
+        elif .3 < (curTime - self.startTime) <= .6:
+            self.setMotorsShow(-20,-20)
+        elif .6 < (curTime - self.startTime) <=.9:
+            self.setMotorsShow(20,20)
+        elif .9 < (curTime - self.startTime):
+            self.setMotorsShow(0,0)
+            self.setRoutine(0)
                 
     def rWiggle(self,fatigue):
         if(self.step == -1):
@@ -185,7 +227,7 @@ class MovementManager:
             self.setMotors(80,-80,fatigue);
         elif(self.step > 4):
             self.setRoutine(0);
-        elif(step%2 == 0):
+        elif(self.step%2 == 0):
             if(time.time()-self.startTime>self.duration):
                 self.duration += .75;
                 self.setMotors(80,-80,fatigue);
