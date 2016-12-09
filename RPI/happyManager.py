@@ -18,7 +18,6 @@ class HappyManager:
     def happyBasedOnTime(self, hunMod):
         if (time.time()-self.startTime) >=1:#change for demo? (was 36)
             self.happ = self.happ-(1/hunMod)
-            print("happ2: " + str(self.happ) + " hunMod: " + str(hunMod) + " " +  str(1/hunMod))
             self.startTime=time.time()
             if self.happ>100:
                 self.happ=100

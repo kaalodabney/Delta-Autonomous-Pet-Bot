@@ -2,7 +2,7 @@ import time
 import max7219.led as led
 class LedManager:
     device = led.matrix(2)
-    device.orientation(270)
+    device.orientation(90)
     startTime = time.time()
     runningRoutine = 0
 
@@ -35,11 +35,14 @@ class LedManager:
             self.setDefaultFace()
         elif self.runningRoutine == 7:
             self.setSadFace()
+        print("led routine: " + str(self.runningRoutine))
+
 
     def findRoutine(self, happyLevel, fatigueLevel, bondLevel, hungerLevel, us, ir, stats, isSleeping):
         if stats == 1:
             self.runningRoutine = 1
-        elif (us > 10 | ir == 1):
+        elif (us < 20 or ir == 1):
+            print("led us: " + str(us) + "led ir: " + str(ir))
             self.runningRoutine = 2
         elif isSleeping == 1:
             self.runningRoutine = 3
